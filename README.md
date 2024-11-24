@@ -1,4 +1,4 @@
-# React + TypeScript + Vite + Node.js + PostgreSQL
+# React + TypeScript + Node.js + PostgreSQL
 
 This is an app used to create, view and edit records.
 
@@ -84,10 +84,10 @@ Install PostgreSQL:
       sender_age INTEGER NOT NULL,
       created_at TIMESTAMP DEFAULT NOW(),
       message TEXT,
-      file_paths JSONB DEFAULT '[]'::jsonb 
-  );
+      file_paths JSONB DEFAULT '[]'::jsonb);
 
   Create indices for the table:
+
   `CREATE UNIQUE INDEX records_pkey ON records(id);`
 
   `CREATE INDEX idx_records_created_at ON records(created_at);`
@@ -105,7 +105,7 @@ Install PostgreSQL:
 
 8. Install dependencies in backend
 ```bash
-cd [project_directory]/backend
+cd records_app/backend
 npm install
 ```
 
@@ -113,7 +113,7 @@ npm install
 
 Run:
 ```bash
-cd [project_directory]/frontend
+cd [records_app]/frontend
 npm run dev
 ```
 
@@ -125,7 +125,7 @@ The line `app.use(cors({ origin: "http://localhost:5173" }));` must match your f
 
 10. Create an `uploads` folder in backend directory
 ```bash
-cd [project_directory]/backend
+cd [records_app]/backend
 mkdir uploads
 ```
 
@@ -133,13 +133,13 @@ mkdir uploads
 
 Run frontend:
 ```bash
-cd [project_directory]/frontend
+cd [records_app]/frontend
 npm run dev
 ```
 
 Run backend:
 ```bash
-cd [project_directory]/backend
+cd [records_app]/backend
 npm run dev
 ```
 
