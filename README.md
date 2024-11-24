@@ -1,36 +1,34 @@
 # React + TypeScript + Vite + Node.js + PostgreSQL
 
-This is an app used to create, view and edit records
+This is an app used to create, view and edit records.
 
 # Prerequisites
 Ensure the following software is installed on your system:
-Node.js (version 20.0.0 or later): Download Node.js
+Node.js (version 20.0.0 or later)
 
 # Installation Steps
-1. Clone the Repository
+1. Clone the repository
 
 Open your terminal and run:
 
 ```bash
-git clone [repository_url]
+git clone https://github.com/garciazapiain/records_app.git
 ```
 
-2. Navigate to the Project Directory
+2. Navigate to the project directory
 
 ```bash
-cd [project_directory]
+cd records_app
 ```
 
-3. Install Dependencies in frontend
+3. Install dependencies in frontend
 
 ```bash
-cd [project_directory]/frontend
+cd frontend
 npm install
 ```
 
-4. Continue Backend Setup Install PostgreSQL if needed
-
-The application relies on a PostgreSQL database. To set it up:
+4. Continue backend setup, install PostgreSQL
 
 Install PostgreSQL:
   
@@ -41,7 +39,7 @@ Install PostgreSQL:
 
   For macOS:
 
-  Use Homebrew:
+  Use Homebrew to install PostgreSQL:
 
   ```bash
   brew install postgresql
@@ -53,6 +51,7 @@ Install PostgreSQL:
   ```
 
 5. Setup PostgreSQL database and user
+
   In a terminal run `psql`
 
   Create a new user, replace your_username and your_password:
@@ -71,7 +70,7 @@ Install PostgreSQL:
 
   `\q`
 
-6. Set Up the Database Schema:
+6. Set Up the database schema:
 
   Connect to the records_app database:
   
@@ -90,24 +89,27 @@ Install PostgreSQL:
 
   Create indices for the table:
   `CREATE UNIQUE INDEX records_pkey ON records(id);`
+
   `CREATE INDEX idx_records_created_at ON records(created_at);`
 
   Exit psql termimal:
   `\q`
 
-6. Configure Environment Variables:
+7. Configure environment variables:
 
   In the backend directory, create a .env file with the following content:
+
   `PORT=4000`
+
   `DATABASE_URL=postgresql://your_username:your_password@localhost:5432/records_app`
 
-7. Install Dependencies in backend
+8. Install dependencies in backend
 ```bash
 cd [project_directory]/backend
 npm install
 ```
 
-8. Verift server.ts configuration
+9. Verify server.ts configuration
 
 Run:
 ```bash
@@ -115,17 +117,19 @@ cd [project_directory]/frontend
 npm run dev
 ```
 
-Take note of localhost port number
-Navigate to `server.ts` in backend folder
+Take note of localhost port number used for frontend.
+
+Navigate to `server.ts` in backend folder.
+
 The line `app.use(cors({ origin: "http://localhost:5173" }));` must match your frontend's development URL.
 
-9. Create an `uploads` folder in backend directory
+10. Create an `uploads` folder in backend directory
 ```bash
 cd [project_directory]/backend
 mkdir uploads
 ```
 
-10. Run app
+11. Run app
 
 Run frontend:
 ```bash
