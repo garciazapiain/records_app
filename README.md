@@ -1,50 +1,89 @@
-# React + TypeScript + Vite
+# React + TypeScript + Vite + Node.js + PostgreSQL
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is an app used to create, view and edit records
 
-Currently, two official plugins are available:
+# Prerequisites
+Ensure the following software is installed on your system:
+Node.js (version 20.0.0 or later): Download Node.js
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Installation Steps
+1. Clone the Repository
+Open your terminal and run:
+git clone [repository_url]
 
-## Expanding the ESLint configuration
+2. Navigate to the Project Directory
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+cd [project_directory]
 
-- Configure the top-level `parserOptions` property like this:
+3. Install Dependencies in frontend
+cd [project_directory]/frontend
+`npm install`
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+4. Continue Backend Setup Install PostgreSQL if needed
+The application relies on a PostgreSQL database. To set it up:
+Install PostgreSQL:
+  
+  For Windows:
+  Download the installer from the PostgreSQL website.
+  Run the installer and follow the on-screen instructions.
+  The PostgreSQL service should start automatically. If not, start it manually via the Services app.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+  For macOS:
+  Use Homebrew:
+  `brew install postgresql`
+  After installation do `brew services start postgresql`
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+5. Setup PostgreSQL database and user
+  In a terminal run `psql`
+  Create a new user, replace your_username and your_password:
+  `CREATE USER your_username WITH PASSWORD 'your_password'`;
+  Create a new database:
+  `CREATE DATABASE records_app OWNER your_username;`
+  Grant all privileges on the database to the user:
+  `GRANT ALL PRIVILEGES ON DATABASE records_app TO your_username;`
+  Exit psql termimal:
+  `\q`
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+6. Set Up the Database Schema:
+  Connect to the records_app database:
+  `psql -d records_app -U your_usernamez`
+  Create the records table with the following schema:
+    `CREATE TABLE records` (
+     id SERIAL PRIMARY KEY,
+      sender_name VARCHAR(255) NOT NULL,
+      sender_age INTEGER NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW(),
+      message TEXT,
+      file_paths JSONB DEFAULT '[]'::jsonb 
+  );
+  Create indices for the table:
+  `CREATE UNIQUE INDEX records_pkey ON records(id);`
+  `CREATE INDEX idx_records_created_at ON records(created_at);`
+  Exit psql termimal:
+  `\q`
+
+6. Configure Environment Variables:
+  In the backend directory, create a .env file with the following content:
+  `DATABASE_URL=postgresql://your_username:your_password@localhost:5432/records_app`
+
+7. Install Dependencies in backend
+cd [project_directory]/backend
+`npm install`
+
+8. Verift server.ts configuration
+cd [project_directory]/frontend
+`npm run dev`
+Take note of localhost port number
+Navigate to server.ts in backend folder
+The line app.use(cors({ origin: "http://localhost:5173" })); must match your frontend's development URL.
+
+9. Run app
+Run frontend:
+cd [project_directory]/frontend
+`npm run dev`
+
+Run backend:
+cd [project_directory]/backend
+`npm run dev`
+
+
