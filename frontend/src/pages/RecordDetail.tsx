@@ -3,18 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Record } from "../types/Record";
 import Headline from "../components/Headline";
 import Button from "../components/Button";
-import SuccessPopup from "../components/SuccessPopup";
 
 const RecordDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-
   const [record, setRecord] = useState<Record | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const navigate = useNavigate();
 
-  // Fetch the record details
   useEffect(() => {
     const fetchRecord = async () => {
       try {
@@ -34,8 +30,13 @@ const RecordDetail: React.FC = () => {
     fetchRecord();
   }, [id]);
 
-  // Handle deleting the record
-  const handleDelete = async () => {
+  if (loading) return <p className="text-white">Loading record details...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
+
+  const handleDelete = async (id: number) => {
+    const confirmed = window.confirm("Are you sure you want to delete this record?");
+    if (!confirmed) return;
+
     try {
       const response = await fetch(`http://localhost:4000/api/records/${id}`, {
         method: "DELETE",
@@ -45,25 +46,17 @@ const RecordDetail: React.FC = () => {
         throw new Error("Failed to delete record");
       }
 
-      setShowSuccess(true);
-    } catch (error) {
-      console.error("Error deleting record:", error);
-      setError("Failed to delete the record.");
+      navigate('/records')
+
+    } catch (err) {
+      console.error("Error deleting record:", err);
+      alert("Failed to delete the record. Please try again.");
     }
   };
-
-  const handleCloseSuccess = () => {
-    setShowSuccess(false);
-    navigate("/records"); // Redirect to the records list
-  };
-
-  if (loading) return <p className="text-white">Loading record details...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
     <div className="min-h-screen flex flex-col items-center p-8 sm:p-16 bg-gray-800">
       <Headline title="Record Details" subtitle="View the details below." />
-
       {record && (
         <div className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-md">
           <p>
@@ -75,20 +68,25 @@ const RecordDetail: React.FC = () => {
           <p>
             <span className="font-bold">Message:</span> {record.message}
           </p>
-          {record.file_path && (
-            <p>
-              <span className="font-bold">File:</span>{" "}
-              <a
-                href={record.file_path}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
-              >
-                Download File
-              </a>
-            </p>
+          {record.file_paths && record.file_paths.length > 0 && (
+            <div className="mt-4">
+              <p className="font-bold">Files:</p>
+              <ul>
+                {record.file_paths.map((filePath, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <a
+                      href={`http://localhost:4000/uploads/${filePath}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      {filePath}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
-
           <div className="flex mt-6 gap-4">
             <Button
               label="Edit Record"
@@ -97,18 +95,11 @@ const RecordDetail: React.FC = () => {
             />
             <Button
               label="Delete Record"
-              onClick={handleDelete}
+              onClick={() => handleDelete(record.id)}
               className="bg-red-600 hover:bg-red-700 text-white"
             />
           </div>
         </div>
-      )}
-
-      {showSuccess && (
-        <SuccessPopup
-          message="Record deleted successfully"
-          onClose={handleCloseSuccess}
-        />
       )}
     </div>
   );

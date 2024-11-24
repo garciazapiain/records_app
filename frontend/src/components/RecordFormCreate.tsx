@@ -1,31 +1,25 @@
 import React, { useState } from "react";
-import { RecordFormData } from "../types/RecordFormData";
+import { RecordFormCreateData } from "../types/RecordFormCreateData";
+import FileUpload from "./FileUpload";
 
 interface RecordFormProps {
-  onSubmit: (formData: RecordFormData) => void;
-  initialValues?: RecordFormData;
+  onSubmit: (formData: RecordFormCreateData) => void;
+  initialValues?: RecordFormCreateData;
   buttonText: string;
 }
 
-const RecordForm: React.FC<RecordFormProps> = ({
+const RecordFormCreate: React.FC<RecordFormProps> = ({
   onSubmit,
-  initialValues = { sender_name: "", sender_age: 0, message: "", file: null },
+  initialValues = { sender_name: "", sender_age: 0, message: "", files: [] },
   buttonText,
 }) => {
-  const [formData, setFormData] = useState<RecordFormData>(initialValues);
+  const [formData, setFormData] = useState<RecordFormCreateData>(initialValues);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: name === "sender_age" ? parseInt(value, 10) || 0 : value,
-    }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      file: e.target.files ? e.target.files[0] : null,
     }));
   };
 
@@ -50,7 +44,6 @@ const RecordForm: React.FC<RecordFormProps> = ({
           required
         />
       </div>
-
       <div className="mb-4">
         <label htmlFor="sender_age" className="block font-bold mb-2">
           Age (0-120)
@@ -61,13 +54,12 @@ const RecordForm: React.FC<RecordFormProps> = ({
           name="sender_age"
           value={formData.sender_age}
           onChange={handleChange}
-          min="0" // Prevent negative values
-          max="120" // Prevent unrealistic ages
+          min="0"
+          max="120"
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
           required
         />
       </div>
-
       <div className="mb-4">
         <label htmlFor="message" className="block font-bold mb-2">
           Message
@@ -81,20 +73,13 @@ const RecordForm: React.FC<RecordFormProps> = ({
           required
         />
       </div>
-
       <div className="mb-4">
-        <label htmlFor="file" className="block font-bold mb-2">
-          Upload File (Optional)
-        </label>
-        <input
-          type="file"
-          id="file"
-          name="file"
-          onChange={handleFileChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        <label className="block font-bold mb-2">Upload Files (Optional, Multiple Allowed)</label>
+        <FileUpload
+          onFilesSelected={(files) => setFormData({ ...formData, files })}
+          acceptedFormats={["image/png", "image/jpeg", "application/pdf"]} // Customize accepted formats
         />
       </div>
-
       <button
         type="submit"
         className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
@@ -105,4 +90,4 @@ const RecordForm: React.FC<RecordFormProps> = ({
   );
 };
 
-export default RecordForm;
+export default RecordFormCreate;

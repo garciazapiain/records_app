@@ -2,6 +2,7 @@ import express from "express";
 import recordsRoutes from "./recordsRoutes";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ app.use(cors({ origin: "http://localhost:5173" })); // Allow requests from your 
 
 // Routes
 app.use("/api/records", recordsRoutes);
+app.use("/uploads", express.static(path.resolve(__dirname, "../uploads"))); // Adjusted path to "../uploads"
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

@@ -3,6 +3,5 @@ export interface Record {
   sender_name: string;
   sender_age: number;
   message: string;
-  file_path?: string; // Optional field for file path
+  file_paths?: string[]; 
 }
-
